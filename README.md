@@ -38,6 +38,9 @@ Then open `http://localhost:8642/`.
 - `index.html` — the Today page: margin notes, composer, year map.
 - `memories.html` — the Memory Archive.
 - `styles.css` — the whole Suminagashi design system for both pages.
+- `paper.js` — procedural washi paper, a render-once WebGL port of the
+  portfolio's display shader (three octaves of value noise plus a deckled
+  vignette). The CSS photo overlay is the no-WebGL fallback.
 - `shared.js` — mood palette and faces, store access, date helpers.
 - `app.js` — Today page behaviour.
 - `memories.js` — archive filtering, pagination, detail panel.
