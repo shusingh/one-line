@@ -47,25 +47,9 @@ body {
   position: relative;
 }
 
-/* Washi paper fibres, lifted and softened so the darkest specks don't read as dirt. */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: url('paper-texture.jpg') center / cover no-repeat;
-  opacity: 0.42;
-  pointer-events: none;
-  z-index: 1;
-  mix-blend-mode: multiply;
-  filter: brightness(1.12) contrast(0.8) saturate(0.68) blur(0.3px);
-  /* Warm vignette: real paper darkens toward its edges. Without this the
-     sheet reads as a flat scan rather than a lit page. */
-  box-shadow: inset 0 0 200px rgba(76, 59, 36, 0.14);
-}
-
 /* Procedural washi from paper.js: an opaque canvas that IS the background,
-   exactly as on the portfolio. The CSS photo overlay below stays as the
-   fallback for browsers without WebGL. */
+   exactly as on the portfolio. Without WebGL the page falls back to the
+   plain paper colour and washes above. */
 .paper-canvas {
   position: fixed;
   inset: 0;
@@ -74,7 +58,6 @@ body::before {
   z-index: 0;
   pointer-events: none;
 }
-body.paper-canvas-active::before { display: none; }
 
 .kanji-motif {
   position: fixed;

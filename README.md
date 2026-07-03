@@ -40,11 +40,10 @@ Then open `http://localhost:8642/`.
 - `styles.css` — the whole Suminagashi design system for both pages.
 - `paper.js` — procedural washi paper, a render-once WebGL port of the
   portfolio's display shader (three octaves of value noise plus a deckled
-  vignette). The CSS photo overlay is the no-WebGL fallback.
+  vignette). Without WebGL the page falls back to the plain paper colour.
 - `shared.js` — mood palette and faces, store access, date helpers.
 - `app.js` — Today page behaviour.
 - `memories.js` — archive filtering, pagination, detail panel.
-- `paper-texture.jpg` — washi fibres, copied from the portfolio project.
 - `mocks/` — archived design steps, oldest to newest: first concepts,
   the suminagashi direction, codex's layout drafts, the mood-face study,
   and the approved v2 mocks.
