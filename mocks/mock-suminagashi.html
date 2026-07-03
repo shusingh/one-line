@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Line — Suminagashi Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Hanken+Grotesk:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Suminagashi paper and traditional ink accents (from shusingh.github.io). */
+    --paper: #efeae0;
+    --sumi: #1a1a1f;
+    --ai: #16407a;
+    --shu: #c0432e;
+    --matsuba: #2e6e52;
+    --matcha: #567a26;
+    --line: rgba(26, 26, 31, 0.18);
+    --bg-elevated: #f7f3eb;
+    --bg-elevated-2: #e6dfd3;
+    --border: rgba(26, 26, 31, 0.1);
+    --text-primary: var(--sumi);
+    --text-secondary: #3a3833;
+    --text-tertiary: #67635b;
+    --accent: var(--matcha);
+    --accent-strong: #435f1d;
+    --font-display: 'Newsreader', Georgia, serif;
+    --font-body: 'Hanken Grotesk', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-jp: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.42), transparent 34%),
+      radial-gradient(circle at 82% 78%, rgba(112, 88, 53, 0.045), transparent 42%),
+      var(--paper);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Washi paper fibres, same treatment as the website. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url('../paper-texture.jpg') center / cover no-repeat;
+    opacity: 0.42;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+    filter: brightness(1.12) contrast(0.8) saturate(0.68) blur(0.3px);
+  }
+
+  /* Faint vertical kanji motif: 一行日記, the one-line diary. */
+  .kanji-motif {
+    position: fixed;
+    top: 90px;
+    right: max(18px, calc(50vw - 420px));
+    writing-mode: vertical-rl;
+    font-family: var(--font-jp);
+    font-weight: 700;
+    font-size: clamp(56px, 8vw, 96px);
+    letter-spacing: 0.14em;
+    color: rgba(26, 26, 31, 0.055);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+
+  ::selection { background: rgba(86, 122, 38, 0.85); color: #f7f2e6; }
+
+  .app {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 84px 28px 72px;
+  }
+
+  /* ---------- Header ---------- */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .eyebrow .jp { color: var(--text-tertiary); font-family: var(--font-jp); letter-spacing: 0.1em; }
+
+  .masthead { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+  .title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(40px, 6vw, 54px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .title .accent { font-style: italic; font-weight: 300; color: var(--accent); }
+  .inkmark { width: 17px; height: 17px; fill: var(--sumi); opacity: .85; margin-right: 10px; vertical-align: baseline; }
+  .date {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(90deg, var(--line), rgba(26,26,31,0.04));
+    margin: 30px 0 46px;
+  }
+
+  /* ---------- Today's entry ---------- */
+  .prompt {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 27px;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+  }
+
+  .entry {
+    width: 100%;
+    border: none;
+    border-bottom: 1.5px solid var(--line);
+    background: transparent;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    padding: 6px 2px 10px;
+    outline: none;
+    transition: border-color 0.25s ease;
+  }
+  .entry::placeholder { color: #a49b8a; }
+  .entry:focus { border-color: var(--sumi); }
+
+  .hint {
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+    user-select: none;
+  }
+
+  /* ---------- Mood pickers (two mock styles, toggle top-right) ---------- */
+  .moods { display: flex; gap: 22px; margin-top: 26px; align-items: flex-end; }
+
+  /* Style 1: ink drops in traditional colours */
+  .mood-ink { display: none; }
+  .mood-ink.visible { display: flex; }
+  .mood-ink button {
+    background: none; border: none; cursor: pointer; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 4px; opacity: .5; transform: scale(1);
+    transition: all .2s cubic-bezier(.34,1.56,.64,1);
+  }
+  .mood-ink button:hover { opacity: .85; transform: scale(1.08); }
+  .mood-ink button.sel { opacity: 1; transform: scale(1.12); }
+  .mood-ink .drop { width: 26px; height: 26px; }
+  .mood-ink .drop svg { width: 100%; height: 100%; }
+  .mood-ink .name {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-tertiary);
+  }
+  .mood-ink button.sel .name { color: var(--text-primary); }
+  .mood-ink .jp-name { font-family: var(--font-jp); font-size: 13px; color: var(--text-secondary); }
+
+  /* Style 2: emoji */
+  .mood-emoji { display: none; }
+  .mood-emoji.visible { display: flex; }
+  .mood-emoji button {
+    font-size: 27px; background: none; border: none; cursor: pointer; line-height: 1;
+    filter: grayscale(1) opacity(.4); transform: scale(1); padding: 5px;
+    transition: all .18s cubic-bezier(.34,1.56,.64,1);
+  }
+  .mood-emoji button:hover { filter: grayscale(0) opacity(1); transform: scale(1.15); }
+  .mood-emoji button.sel { filter: grayscale(0) opacity(1); transform: scale(1.25); }
+
+  /* ---------- On this day ---------- */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 56px 0 14px;
+  }
+  .section-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  .flash {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .flash + .flash { margin-top: 10px; }
+  .flash .when {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 7px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .flash .when .mood-dot { width: 7px; height: 7px; border-radius: 50% 60% 55% 50%; display: inline-block; }
+  .flash .text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16.5px;
+    color: var(--text-primary);
+  }
+  .flash .text::before { content: '“'; color: var(--text-tertiary); }
+  .flash .text::after { content: '”'; color: var(--text-tertiary); }
+
+  /* ---------- The year, marbled ---------- */
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+  .stats .streak { color: var(--shu); font-weight: 500; }
+
+  .heatmap-scroll { overflow-x: auto; padding: 4px 2px 8px; }
+  .heatmap {
+    display: grid;
+    grid-template-rows: repeat(7, 1fr);
+    grid-auto-flow: column;
+    gap: 4px;
+    width: max-content;
+  }
+  /* Ink droplets on water: circles, slightly irregular, coloured by mood. */
+  .cell {
+    width: 12px; height: 12px;
+    border-radius: 50% 60% 55% 65%;
+    background: var(--bg-elevated-2);
+    transition: transform .15s ease;
+  }
+  .cell:hover { transform: scale(1.35); }
+  .cell.m1 { background: #8d8a92; }              /* 荒 rough — diluted sumi   */
+  .cell.m2 { background: var(--ai); }            /* 曇 cloudy — ai indigo     */
+  .cell.m3 { background: var(--matsuba); }       /* 凪 calm — matsuba pine    */
+  .cell.m4 { background: var(--matcha); }        /* 晴 clear — matcha         */
+  .cell.m5 { background: var(--shu); }           /* 輝 radiant — shu          */
+  .cell.today { outline: 1.5px solid var(--sumi); outline-offset: 2px; }
+
+  .legend {
+    display: flex; gap: 18px; margin-top: 14px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend i { width: 9px; height: 9px; border-radius: 50% 60% 55% 65%; display: inline-block; }
+
+  .footer-note {
+    margin-top: 60px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+  }
+
+  /* ---------- Mock control (not part of the app) ---------- */
+  .mock-toggle {
+    position: fixed; top: 14px; right: 14px; z-index: 50;
+    display: flex; gap: 4px; padding: 4px;
+    background: rgba(26,26,31,.85); backdrop-filter: blur(10px);
+    border-radius: 999px;
+  }
+  .mock-toggle .lbl {
+    color: #9a958c; font: 500 10px/1 var(--font-mono); align-self: center;
+    padding: 0 6px 0 10px; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .mock-toggle button {
+    border: none; background: transparent; color: #b6b1a6; cursor: pointer;
+    font: 500 11.5px/1 var(--font-mono); padding: 8px 14px; border-radius: 999px;
+    transition: all .2s;
+  }
+  .mock-toggle button.active { background: var(--paper); color: var(--sumi); }
+</style>
+</head>
+<body>
+
+<div class="kanji-motif" aria-hidden="true">一行日記</div>
+
+<nav class="mock-toggle">
+  <span class="lbl">Mood picker</span>
+  <button class="active" data-m="ink">Ink drops</button>
+  <button data-m="emoji">Emoji</button>
+</nav>
+
+<main class="app">
+  <div class="eyebrow">ONE LINE JOURNAL <span class="jp">一行日記</span></div>
+
+  <div class="masthead">
+    <h1 class="title">
+      <svg class="inkmark" viewBox="0 0 32 32" aria-hidden="true">
+        <ellipse cx="13.5" cy="17" rx="9.4" ry="8.6"></ellipse>
+        <circle cx="24.5" cy="8.6" r="2.6"></circle>
+      </svg>One <span class="accent">Line</span>
+    </h1>
+    <div class="date">Friday, July 3, 2026</div>
+  </div>
+
+  <div class="rule"></div>
+
+  <div class="prompt">How was today, in one line?</div>
+  <input class="entry" placeholder="A single sentence will do…">
+  <div class="hint">press enter to set it down in ink · it saves itself</div>
+
+  <!-- Mood: ink drops -->
+  <div class="moods mood-ink visible">
+    <button data-mood="1" title="rough">
+      <span class="drop"><svg viewBox="0 0 32 32" fill="#8d8a92"><ellipse cx="15" cy="17" rx="10" ry="9.2"/><circle cx="25.5" cy="8" r="2.4"/></svg></span>
+      <span class="jp-name">荒</span><span class="name">rough</span>
+    </button>
+    <button data-mood="2" title="cloudy">
+      <span class="drop"><svg viewBox="0 0 32 32" fill="#16407a"><ellipse cx="15" cy="17" rx="10" ry="9.2"/><circle cx="25.5" cy="8" r="2.4"/></svg></span>
+      <span class="jp-name">曇</span><span class="name">cloudy</span>
+    </button>
+    <button data-mood="3" class="sel" title="calm">
+      <span class="drop"><svg viewBox="0 0 32 32" fill="#2e6e52"><ellipse cx="15" cy="17" rx="10" ry="9.2"/><circle cx="25.5" cy="8" r="2.4"/></svg></span>
+      <span class="jp-name">凪</span><span class="name">calm</span>
+    </button>
+    <button data-mood="4" title="clear">
+      <span class="drop"><svg viewBox="0 0 32 32" fill="#567a26"><ellipse cx="15" cy="17" rx="10" ry="9.2"/><circle cx="25.5" cy="8" r="2.4"/></svg></span>
+      <span class="jp-name">晴</span><span class="name">clear</span>
+    </button>
+    <button data-mood="5" title="radiant">
+      <span class="drop"><svg viewBox="0 0 32 32" fill="#c0432e"><ellipse cx="15" cy="17" rx="10" ry="9.2"/><circle cx="25.5" cy="8" r="2.4"/></svg></span>
+      <span class="jp-name">輝</span><span class="name">radiant</span>
+    </button>
+  </div>
+
+  <!-- Mood: emoji -->
+  <div class="moods mood-emoji">
+    <button data-mood="1">😞</button>
+    <button data-mood="2">😐</button>
+    <button data-mood="3" class="sel">🙂</button>
+    <button data-mood="4">😄</button>
+    <button data-mood="5">🤩</button>
+  </div>
+
+  <div class="section-label"><span class="dot"></span> On this day</div>
+  <div class="flash">
+    <div class="when"><span class="mood-dot" style="background:#567a26"></span> One month ago · June 3</div>
+    <div class="text">Finally tried that café by the park, worth every minute.</div>
+  </div>
+  <div class="flash">
+    <div class="when"><span class="mood-dot" style="background:#c0432e"></span> One year ago · July 3, 2025</div>
+    <div class="text">Long day, but the demo went perfectly.</div>
+  </div>
+
+  <div class="section-label"><span class="dot"></span> The year, marbled</div>
+  <div class="stats">
+    <span>128 entries · 2026</span>
+    <span class="streak">14-day streak 〜</span>
+  </div>
+  <div class="heatmap-scroll"><div class="heatmap"></div></div>
+  <div class="legend">
+    <span><i style="background:#8d8a92"></i>荒 rough</span>
+    <span><i style="background:#16407a"></i>曇 cloudy</span>
+    <span><i style="background:#2e6e52"></i>凪 calm</span>
+    <span><i style="background:#567a26"></i>晴 clear</span>
+    <span><i style="background:#c0432e"></i>輝 radiant</span>
+  </div>
+
+  <div class="footer-note">your words never leave this device · export ink anytime</div>
+</main>
+
+<script>
+  // Mock control: switch mood picker style
+  document.querySelectorAll('.mock-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mock-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector('.mood-ink').classList.toggle('visible', btn.dataset.m === 'ink');
+      document.querySelector('.mood-emoji').classList.toggle('visible', btn.dataset.m === 'emoji');
+    });
+  });
+
+  // Mood selection
+  document.querySelectorAll('.moods').forEach(group => {
+    group.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('button').forEach(b => b.classList.remove('sel'));
+        btn.classList.add('sel');
+      });
+    });
+  });
+
+  // Heatmap: 26 weeks of deterministic sample moods ending today.
+  function seededMood(i) {
+    const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+    const f = x - Math.floor(x);
+    if (f < 0.24) return 0;
+    return 1 + Math.floor(f * 6.6) % 5;
+  }
+  const WEEKS = 26, DAYS = WEEKS * 7;
+  const map = document.querySelector('.heatmap');
+  const names = ['no entry', '荒 rough', '曇 cloudy', '凪 calm', '晴 clear', '輝 radiant'];
+  for (let i = 0; i < DAYS; i++) {
+    const cell = document.createElement('div');
+    const m = seededMood(i);
+    cell.className = 'cell' + (m ? ' m' + m : '');
+    if (i === DAYS - 1) cell.classList.add('today');
+    const d = new Date(2026, 6, 3);
+    d.setDate(d.getDate() - (DAYS - 1 - i));
+    cell.title = d.toDateString() + ' · ' + names[m];
+    map.appendChild(cell);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Line · 一行日記</title>
+<meta name="description" content="A local-first one-sentence-a-day journal. Your words never leave this device.">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><ellipse cx="13.5" cy="17" rx="9.4" ry="8.6" fill="%231a1a1f"/><circle cx="24.5" cy="8.6" r="2.6" fill="%231a1a1f"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Hanken+Grotesk:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700&text=%E4%B8%80%E8%A1%8C%E6%97%A5%E8%A8%98%E8%8D%92%E6%9B%87%E5%87%AA%E6%99%B4%E8%BC%9D&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+
+<div class="kanji-motif" aria-hidden="true">一行日記</div>
+
+<main class="column">
+  <div class="eyebrow"><span class="jp">一行日記</span></div>
+  <div class="masthead">
+    <h1 class="title">One <span class="accent">Line</span></h1>
+    <div class="date" id="today-date"></div>
+  </div>
+  <div class="rule"></div>
+
+  <section class="composer">
+    <label class="prompt" for="entry">How was today?</label>
+    <input class="entry" id="entry" maxlength="240" autocomplete="off" spellcheck="true"
+           placeholder="A single sentence will do…">
+
+    <div class="moods" id="moods" role="radiogroup" aria-label="Mood for today"></div>
+
+    <div class="actions">
+      <button class="save-btn" id="save-btn" type="button" disabled>Save</button>
+      <span class="hint" id="hint">write today’s line, then pick a mood</span>
+      <span class="counter" id="counter" aria-hidden="true">0 / 240</span>
+    </div>
+
+    <div class="flash today-saved" id="today-saved" hidden>
+      <div class="when" id="today-saved-when"></div>
+      <div class="text" id="today-saved-text"></div>
+      <div>
+        <button class="linklike" id="edit-today-btn" type="button">edit</button>
+        <button class="linklike" id="remove-today-btn" type="button">remove</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Margin notes: fixed in the left margin on wide screens,
+       flowing here between composer and year map on narrow ones. -->
+  <aside class="margin" aria-label="Notebook margin">
+    <section class="m-week">
+      <div class="m-title">This week <span class="jp">週</span></div>
+      <div class="week-line" id="week"></div>
+    </section>
+
+    <section class="m-flash">
+      <div class="m-title">On this day <span class="jp">記</span></div>
+      <div id="flashes"></div>
+    </section>
+
+    <section class="m-balance">
+      <div class="m-title" id="balance-title">Mood balance</div>
+      <div class="balance-line" id="balance"></div>
+    </section>
+
+    <section class="m-link">
+      <a class="rail-link" href="memories.html">browse all memories →</a>
+    </section>
+  </aside>
+
+  <section class="year-map">
+    <div class="section-label"><span class="dot"></span> The year, marbled</div>
+    <div class="stats">
+      <span id="stat-entries"></span>
+      <span class="streak" id="stat-streak"></span>
+    </div>
+    <div class="heatmap-scroll" id="heatmap-scroll">
+      <div class="month-row" id="month-row" aria-hidden="true"></div>
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="flash day-detail" id="day-detail" hidden>
+      <button class="detail-close" id="detail-close" aria-label="Close">×</button>
+      <div class="when" id="detail-when"></div>
+      <div class="text" id="detail-text"></div>
+    </div>
+  </section>
+
+  <footer class="footer-note">
+    your words never leave this device ·
+    <button class="linklike" id="export-btn">export ink</button> ·
+    <button class="linklike" id="import-btn">import</button>
+    <input type="file" id="import-file" accept="application/json" hidden>
+    <a class="byline" href="https://shusingh.github.io/" target="_blank" rel="noreferrer">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="13.5" cy="17" rx="9.4" ry="8.6"/><circle cx="24.5" cy="8.6" r="2.6"/></svg>
+      made by Shubham Singh
+    </a>
+  </footer>
+</main>
+
+<script src="shared.js?v=5"></script>
+<script src="app.js?v=5"></script>
+</body>
+</html>

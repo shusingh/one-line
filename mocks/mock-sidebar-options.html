@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Line · Sidebar Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Hanken+Grotesk:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700&text=%E4%B8%80%E8%A1%8C%E6%97%A5%E8%A8%98%E8%8D%92%E6%9B%87%E5%87%AA%E6%99%B4%E8%BC%9D&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #efeae0;
+    --sumi: #1a1a1f;
+    --shu: #c0432e;
+    --line: rgba(26, 26, 31, 0.18);
+    --bg-elevated: #f7f3eb;
+    --border: rgba(26, 26, 31, 0.1);
+    --text-secondary: #3a3833;
+    --text-tertiary: #67635b;
+    --accent: #567a26;
+    --accent-strong: #435f1d;
+    --font-display: 'Newsreader', Georgia, serif;
+    --font-body: 'Hanken Grotesk', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-jp: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    --mood1: #8d8a92; --mood2: #16407a; --mood3: #2e6e52; --mood4: #567a26; --mood5: #cf8d12;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 18% 12%, rgba(255,255,255,.42), transparent 34%),
+      radial-gradient(circle at 82% 78%, rgba(112,88,53,.045), transparent 42%),
+      var(--paper);
+    color: var(--sumi);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: url('../paper-texture.jpg') center / cover no-repeat;
+    opacity: .42; pointer-events: none; z-index: 1;
+    mix-blend-mode: multiply;
+    filter: brightness(1.12) contrast(.8) saturate(.68) blur(.3px);
+  }
+  button, input { font: inherit; }
+
+  /* ---------- mock switcher ---------- */
+  .switcher {
+    position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 100;
+    display: flex; gap: 4px; padding: 5px;
+    background: rgba(20,20,24,.85); backdrop-filter: blur(12px);
+    border-radius: 999px; border: 1px solid rgba(255,255,255,.14);
+  }
+  .switcher button {
+    border: none; background: transparent; color: #b6b1a6; cursor: pointer;
+    font: 500 12px/1 var(--font-mono); padding: 9px 16px; border-radius: 999px; transition: all .2s;
+  }
+  .switcher button.active { background: var(--paper); color: var(--sumi); }
+
+  .variant { display: none; position: relative; z-index: 2; min-height: 100vh; }
+  .variant.active { display: block; }
+
+  /* ---------- shared pieces ---------- */
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--accent);
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+  }
+  .eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .eyebrow .jp { color: var(--text-tertiary); font-family: var(--font-jp); letter-spacing: .1em; }
+  .masthead { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  h1 { font-family: var(--font-display); font-weight: 400; font-size: 42px; line-height: 1; letter-spacing: -.02em; }
+  h1 span { color: var(--accent); font-style: italic; font-weight: 300; }
+  .date { font-family: var(--font-display); font-style: italic; font-size: 15.5px; color: var(--text-tertiary); white-space: nowrap; }
+  .rule { height: 1px; background: linear-gradient(90deg, var(--line), rgba(26,26,31,.04)); margin-top: 26px; }
+
+  .composer { margin-top: 72px; }
+  .prompt {
+    display: block; font-family: var(--font-display); font-weight: 400;
+    font-size: clamp(30px, 4.6vw, 38px); line-height: 1.12; letter-spacing: -.015em; margin-bottom: 34px;
+  }
+  .entry {
+    width: 100%; border: none; border-bottom: 1.5px solid var(--line); background: transparent;
+    font-family: var(--font-display); font-style: italic; font-size: 23px; line-height: 1.45;
+    color: var(--sumi); outline: none; padding: 6px 2px 12px;
+  }
+  .entry::placeholder { color: #a49b8a; }
+  .entry:focus { border-color: var(--sumi); }
+  .moods { display: flex; gap: 26px; margin-top: 38px; align-items: flex-end; flex-wrap: wrap; }
+  .mood {
+    border: none; background: none; cursor: pointer; display: grid; justify-items: center; gap: 8px;
+    padding: 4px; opacity: .5; transition: all .2s cubic-bezier(.34,1.56,.64,1);
+  }
+  .mood:hover { opacity: .85; transform: scale(1.07); }
+  .mood.sel { opacity: 1; transform: scale(1.13); }
+  .mood svg { width: 34px; height: 34px; }
+  .mood .jp { font-family: var(--font-jp); font-size: 13px; color: var(--text-secondary); }
+  .mood .name { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-tertiary); }
+  .mood.sel .name { color: var(--sumi); }
+  .actions { display: flex; align-items: center; gap: 18px; margin-top: 38px; }
+  .save {
+    min-width: 120px; min-height: 44px; border: 1px solid var(--accent); border-radius: 999px;
+    background: var(--accent); color: #f7f2e6; cursor: pointer;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .hint { font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; color: var(--text-tertiary); }
+
+  .section-label {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text-tertiary); display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .section-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .stats { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-tertiary); }
+  .stats .streak { color: var(--shu); font-weight: 600; }
+  .heatmap-scroll { overflow-x: auto; padding: 3px 7px 8px 2px; }
+  .heatmap { display: grid; grid-template-rows: repeat(7, 12px); grid-auto-columns: 12px; grid-auto-flow: column; gap: 4px; width: max-content; }
+  .cell { width: 12px; height: 12px; border-radius: 50% 60% 55% 65%; background: rgba(26,26,31,.055); }
+  .cell.today { outline: 1.5px solid var(--sumi); outline-offset: 2px; }
+  .m1 { background: var(--mood1) !important; } .m2 { background: var(--mood2) !important; }
+  .m3 { background: var(--mood3) !important; } .m4 { background: var(--mood4) !important; }
+  .m5 { background: var(--mood5) !important; }
+
+  .meta {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .meta svg { width: 15px; height: 15px; flex: none; }
+  .mtext { margin-top: 7px; font-family: var(--font-display); font-style: italic; font-size: 15px; line-height: 1.45; }
+  .rail-link {
+    display: inline-flex; color: var(--accent-strong);
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+
+  /* =========================================================
+     A · NOTEBOOK — permanent left sidebar with panels
+     ========================================================= */
+  #notebook .shell { display: flex; min-height: 100vh; }
+  #notebook .side {
+    flex: 0 0 300px; border-right: 1px solid var(--border);
+    background: rgba(247, 243, 235, 0.55);
+    padding: 66px 22px 30px;
+    display: grid; gap: 16px; align-content: start;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  }
+  #notebook .brand {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    font-family: var(--font-display); font-size: 19px;
+  }
+  #notebook .brand svg { width: 18px; height: 18px; fill: var(--sumi); opacity: .85; }
+  #notebook .brand em { color: var(--accent); font-weight: 300; }
+  #notebook .panel { border: 1px solid var(--border); border-radius: 8px; background: rgba(247,243,235,.72); padding: 15px 16px; }
+  #notebook .panel-title { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 12px; }
+  #notebook .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  #notebook .day { display: grid; justify-items: center; gap: 6px; font-family: var(--font-mono); font-size: 9px; color: var(--text-tertiary); }
+  #notebook .day i { width: 16px; height: 16px; border-radius: 50% 60% 55% 65%; background: rgba(26,26,31,.055); }
+  #notebook .day.today i { outline: 1.5px solid var(--sumi); outline-offset: 2px; }
+  #notebook .mcard { padding: 11px 12px; border: 1px solid var(--border); border-radius: 8px; background: rgba(247,243,235,.5); }
+  #notebook .mcard + .mcard { margin-top: 8px; }
+  #notebook .balance { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  #notebook .balance .day svg { width: 20px; height: 20px; }
+  #notebook .main { flex: 1; display: flex; justify-content: center; }
+  #notebook .column { width: min(620px, calc(100vw - 300px - 72px)); padding: 66px 0 64px; }
+  #notebook .year-map { margin-top: 96px; }
+
+  /* =========================================================
+     B · MARGINALIA — permanent left column, no boxes at all
+     ========================================================= */
+  #marginalia .shell {
+    display: grid; grid-template-columns: 264px minmax(0, 620px);
+    justify-content: center; gap: 72px;
+    min-height: 100vh; padding: 66px 40px 64px;
+  }
+  #marginalia .margin {
+    padding-top: 156px;
+    font-size: 14px;
+    display: grid; gap: 34px; align-content: start;
+    position: sticky; top: 0; height: fit-content;
+  }
+  #marginalia .margin::before {
+    content: ''; position: absolute; top: 160px; bottom: 20px; right: -36px;
+    width: 1px; background: linear-gradient(180deg, transparent, var(--line) 18%, var(--line) 82%, transparent);
+  }
+  #marginalia .m-title {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text-tertiary); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  #marginalia .m-title .jp { font-family: var(--font-jp); font-size: 12px; letter-spacing: .1em; }
+  #marginalia .week-line { display: flex; gap: 9px; align-items: center; }
+  #marginalia .week-line i { width: 14px; height: 14px; border-radius: 50% 60% 55% 65%; background: rgba(26,26,31,.06); }
+  #marginalia .week-line i.today { outline: 1.5px solid var(--sumi); outline-offset: 2px; }
+  #marginalia .quote { font-family: var(--font-display); font-style: italic; font-size: 15px; line-height: 1.5; color: var(--text-secondary); }
+  #marginalia .quote + .m-when { margin-top: 4px; }
+  #marginalia .m-when { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-tertiary); display: flex; gap: 7px; align-items: center; }
+  #marginalia .m-when svg { width: 13px; height: 13px; }
+  #marginalia .m-entry + .m-entry { margin-top: 16px; }
+  #marginalia .balance-line { display: flex; gap: 14px; }
+  #marginalia .balance-line span { display: grid; justify-items: center; gap: 3px; font-family: var(--font-mono); font-size: 9.5px; color: var(--text-tertiary); }
+  #marginalia .balance-line svg { width: 19px; height: 19px; }
+  #marginalia .year-map { margin-top: 96px; }
+
+  /* =========================================================
+     C · SINGLE SHEET — no sidebar, one serene column
+     ========================================================= */
+  #sheet .column { max-width: 620px; margin: 0 auto; padding: 66px 28px 64px; }
+  #sheet .flash {
+    background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 18px;
+  }
+  #sheet .flash + .flash { margin-top: 10px; }
+  #sheet .on-this-day { margin-top: 84px; }
+  #sheet .year-map { margin-top: 72px; }
+  #sheet .strip {
+    display: flex; justify-content: space-between; align-items: center; gap: 18px;
+    margin-top: 84px; padding: 14px 18px;
+    border: 1px solid var(--border); border-radius: 999px; background: rgba(247,243,235,.6);
+  }
+  #sheet .strip .week-line { display: flex; gap: 9px; }
+  #sheet .strip .week-line i { width: 14px; height: 14px; border-radius: 50% 60% 55% 65%; background: rgba(26,26,31,.06); }
+  #sheet .strip .week-line i.today { outline: 1.5px solid var(--sumi); outline-offset: 2px; }
+  #sheet .strip .lbl { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-tertiary); }
+
+  .kanji {
+    position: fixed; top: 92px; right: 26px;
+    writing-mode: vertical-rl; font-family: var(--font-jp); font-weight: 700;
+    font-size: clamp(56px, 7vw, 92px); letter-spacing: .14em;
+    color: rgba(26,26,31,.05); pointer-events: none; z-index: 0;
+  }
+
+  @media (max-width: 900px) {
+    .kanji { display: none; }
+    #notebook .shell { flex-direction: column-reverse; }
+    #notebook .side { position: static; height: auto; flex-basis: auto; border-right: none; border-top: 1px solid var(--border); }
+    #notebook .column { width: calc(100vw - 48px); }
+    #marginalia .shell { grid-template-columns: 1fr; gap: 40px; padding-inline: 24px; }
+    #marginalia .margin { order: 2; padding-top: 0; position: static; }
+    #marginalia .margin::before { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="kanji" aria-hidden="true">一行日記</div>
+
+<nav class="switcher">
+  <button class="active" data-v="notebook">A · Notebook</button>
+  <button data-v="marginalia">B · Marginalia</button>
+  <button data-v="sheet">C · Single sheet</button>
+</nav>
+
+<!-- ================= A · NOTEBOOK ================= -->
+<section class="variant active" id="notebook">
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="13.5" cy="17" rx="9.4" ry="8.6"/><circle cx="24.5" cy="8.6" r="2.6"/></svg>
+        One <em>Line</em>
+      </div>
+      <section class="panel">
+        <div class="panel-title">This week</div>
+        <div class="week">
+          <div class="day"><i class="m3"></i><span>Mon</span></div>
+          <div class="day"><i class="m4"></i><span>Tue</span></div>
+          <div class="day"><i class="m2"></i><span>Wed</span></div>
+          <div class="day"><i></i><span>Thu</span></div>
+          <div class="day today"><i class="m3"></i><span>Fri</span></div>
+          <div class="day"><i></i><span>Sat</span></div>
+          <div class="day"><i></i><span>Sun</span></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-title">On this day</div>
+        <div class="mcard">
+          <div class="meta"><span data-face="4"></span> one month ago</div>
+          <p class="mtext">Finally tried that cafe by the park, worth every minute.</p>
+        </div>
+        <div class="mcard">
+          <div class="meta"><span data-face="5"></span> one year ago</div>
+          <p class="mtext">Long day, but the demo went perfectly.</p>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-title">Mood balance · 2026</div>
+        <div class="balance" data-balance></div>
+      </section>
+      <a class="rail-link" href="#">browse all memories →</a>
+    </aside>
+
+    <main class="main"><div class="column">
+      <div class="eyebrow">ONE LINE JOURNAL <span class="jp">一行日記</span></div>
+      <div class="masthead"><h1>One <span>Line</span></h1><div class="date">Friday, July 3, 2026</div></div>
+      <div class="rule"></div>
+      <section class="composer">
+        <label class="prompt">How was today,<br>in one line?</label>
+        <input class="entry" placeholder="A single sentence will do…">
+        <div class="moods" data-moods></div>
+        <div class="actions"><button class="save">Save</button><span class="hint">write one line to save today</span></div>
+      </section>
+      <section class="year-map">
+        <div class="section-label"><span class="dot"></span> The year, marbled</div>
+        <div class="stats"><span>129 entries · 2026</span><span class="streak">12-day streak 〜</span></div>
+        <div class="heatmap-scroll"><div class="heatmap" data-heatmap></div></div>
+      </section>
+    </div></main>
+  </div>
+</section>
+
+<!-- ================= B · MARGINALIA ================= -->
+<section class="variant" id="marginalia">
+  <div class="shell">
+    <aside class="margin">
+      <div>
+        <div class="m-title">This week <span class="jp">週</span></div>
+        <div class="week-line">
+          <i class="m3"></i><i class="m4"></i><i class="m2"></i><i></i><i class="m3 today"></i><i></i><i></i>
+        </div>
+      </div>
+      <div>
+        <div class="m-title">On this day <span class="jp">記</span></div>
+        <div class="m-entry">
+          <p class="quote">“Finally tried that cafe by the park, worth every minute.”</p>
+          <div class="m-when"><span data-face="4"></span> one month ago</div>
+        </div>
+        <div class="m-entry">
+          <p class="quote">“Long day, but the demo went perfectly.”</p>
+          <div class="m-when"><span data-face="5"></span> one year ago</div>
+        </div>
+      </div>
+      <div>
+        <div class="m-title">Mood balance</div>
+        <div class="balance-line" data-balance-line></div>
+      </div>
+      <a class="rail-link" href="#">browse all memories →</a>
+    </aside>
+
+    <main><div>
+      <div class="eyebrow">ONE LINE JOURNAL <span class="jp">一行日記</span></div>
+      <div class="masthead"><h1>One <span>Line</span></h1><div class="date">Friday, July 3, 2026</div></div>
+      <div class="rule"></div>
+      <section class="composer">
+        <label class="prompt">How was today,<br>in one line?</label>
+        <input class="entry" placeholder="A single sentence will do…">
+        <div class="moods" data-moods></div>
+        <div class="actions"><button class="save">Save</button><span class="hint">write one line to save today</span></div>
+      </section>
+      <section class="year-map">
+        <div class="section-label"><span class="dot"></span> The year, marbled</div>
+        <div class="stats"><span>129 entries · 2026</span><span class="streak">12-day streak 〜</span></div>
+        <div class="heatmap-scroll"><div class="heatmap" data-heatmap></div></div>
+      </section>
+    </div></main>
+  </div>
+</section>
+
+<!-- ================= C · SINGLE SHEET ================= -->
+<section class="variant" id="sheet">
+  <div class="column">
+    <div class="eyebrow">ONE LINE JOURNAL <span class="jp">一行日記</span></div>
+    <div class="masthead"><h1>One <span>Line</span></h1><div class="date">Friday, July 3, 2026</div></div>
+    <div class="rule"></div>
+    <section class="composer">
+      <label class="prompt">How was today,<br>in one line?</label>
+      <input class="entry" placeholder="A single sentence will do…">
+      <div class="moods" data-moods></div>
+      <div class="actions"><button class="save">Save</button><span class="hint">write one line to save today</span></div>
+    </section>
+
+    <div class="strip">
+      <span class="lbl">This week</span>
+      <div class="week-line"><i class="m3"></i><i class="m4"></i><i class="m2"></i><i></i><i class="m3 today"></i><i></i><i></i></div>
+      <a class="rail-link" href="#">memories →</a>
+    </div>
+
+    <section class="on-this-day">
+      <div class="section-label"><span class="dot"></span> On this day</div>
+      <div class="flash">
+        <div class="meta"><span data-face="4"></span> one month ago</div>
+        <p class="mtext">Finally tried that cafe by the park, worth every minute.</p>
+      </div>
+      <div class="flash">
+        <div class="meta"><span data-face="5"></span> one year ago</div>
+        <p class="mtext">Long day, but the demo went perfectly.</p>
+      </div>
+    </section>
+
+    <section class="year-map">
+      <div class="section-label"><span class="dot"></span> The year, marbled</div>
+      <div class="stats"><span>129 entries · 2026</span><span class="streak">12-day streak 〜</span></div>
+      <div class="heatmap-scroll"><div class="heatmap" data-heatmap></div></div>
+    </section>
+  </div>
+</section>
+
+<script>
+  const MOODS = [
+    { n: 1, jp: '荒', en: 'rough',   c: '#8d8a92' },
+    { n: 2, jp: '曇', en: 'cloudy',  c: '#16407a' },
+    { n: 3, jp: '凪', en: 'calm',    c: '#2e6e52' },
+    { n: 4, jp: '晴', en: 'clear',   c: '#567a26' },
+    { n: 5, jp: '輝', en: 'radiant', c: '#cf8d12' },
+  ];
+  const P = '#f7f3eb';
+  function face(n) {
+    const s = `stroke="${P}" stroke-width="1.9" stroke-linecap="round" fill="none"`;
+    switch (n) {
+      case 1: return `<path d="M9.5,14.5 l4.4,2.1 -4.4,2.1" ${s}/><path d="M24.5,14.5 l-4.4,2.1 4.4,2.1" ${s}/><path d="M12.5,24.8 q2,-2.6 4,0 q2,2.6 4,0" ${s}/>`;
+      case 2: return `<path d="M10,16.5 h4.6" ${s}/><path d="M19.4,16.5 h4.6" ${s}/><path d="M14.6,24.6 h4.8" ${s}/><path d="M26.2,12.2 q1.6,2.6 0,3.8 q-1.6,-1.2 0,-3.8" fill="${P}" opacity=".85"/>`;
+      case 3: return `<path d="M9.8,15.6 q2.6,3 5.2,0" ${s}/><path d="M19,15.6 q2.6,3 5.2,0" ${s}/><path d="M13.6,23.6 q3.4,2.9 6.8,0" ${s}/>`;
+      case 4: return `<path d="M9.8,17 q2.6,-3.4 5.2,0" ${s}/><path d="M19,17 q2.6,-3.4 5.2,0" ${s}/><path d="M13,22.5 q4,4.8 8,0 z" fill="${P}"/><circle cx="8.6" cy="20.6" r="1.7" fill="${P}" opacity=".4"/><circle cx="25.4" cy="20.6" r="1.7" fill="${P}" opacity=".4"/>`;
+      case 5: return `<path d="M12.2,12.2 l1,2.7 2.7,1 -2.7,1 -1,2.7 -1,-2.7 -2.7,-1 2.7,-1 z" fill="${P}"/><path d="M21.8,12.2 l1,2.7 2.7,1 -2.7,1 -1,2.7 -1,-2.7 -2.7,-1 2.7,-1 z" fill="${P}"/><path d="M11.8,22 q5.2,6.2 10.4,0 z" fill="${P}"/>`;
+      default: return '';
+    }
+  }
+  function blob(n, size) {
+    const m = MOODS[n - 1];
+    return `<svg viewBox="0 0 36 36" style="width:${size}px;height:${size}px" aria-hidden="true">
+      <ellipse cx="17" cy="19" rx="12.2" ry="11.2" fill="${m.c}"/><circle cx="31" cy="7" r="2.7" fill="${m.c}"/>${face(n)}</svg>`;
+  }
+
+  // switcher
+  document.querySelectorAll('.switcher button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.switcher button').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.variant').forEach((v) => v.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.v).classList.add('active');
+    });
+  });
+
+  // mood pickers
+  document.querySelectorAll('[data-moods]').forEach((row) => {
+    for (const m of MOODS) {
+      const btn = document.createElement('button');
+      btn.className = 'mood' + (m.n === 3 ? ' sel' : '');
+      btn.type = 'button';
+      btn.innerHTML = `${blob(m.n, 34)}<span class="jp">${m.jp}</span><span class="name">${m.en}</span>`;
+      btn.addEventListener('click', () => {
+        row.querySelectorAll('.mood').forEach((b) => b.classList.remove('sel'));
+        btn.classList.add('sel');
+      });
+      row.appendChild(btn);
+    }
+  });
+
+  // inline faces
+  document.querySelectorAll('[data-face]').forEach((el) => {
+    el.outerHTML = blob(Number(el.dataset.face), 15);
+  });
+
+  // balances
+  document.querySelectorAll('[data-balance]').forEach((el) => {
+    el.innerHTML = MOODS.map((m, i) =>
+      `<div class="day">${blob(m.n, 20)}<span>${[4, 9, 18, 13, 7][i]}</span></div>`).join('');
+  });
+  document.querySelectorAll('[data-balance-line]').forEach((el) => {
+    el.innerHTML = MOODS.map((m, i) =>
+      `<span>${blob(m.n, 19)}${[4, 9, 18, 13, 7][i]}</span>`).join('');
+  });
+
+  // heatmaps
+  document.querySelectorAll('[data-heatmap]').forEach((map) => {
+    for (let i = 0; i < 371; i++) {
+      const cell = document.createElement('span');
+      const filled = i > 220 && i % 3 !== 0;
+      cell.className = 'cell' + (filled ? ` m${(i % 5) + 1}` : '') + (i === 370 ? ' today' : '');
+      map.appendChild(cell);
+    }
+    const sc = map.closest('.heatmap-scroll');
+    sc.scrollLeft = sc.scrollWidth;
+  });
+</script>
+</body>
+</html>

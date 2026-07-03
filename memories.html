@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Archive · One Line</title>
+<meta name="description" content="Browse every line you have set down. Local-first; nothing leaves this device.">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><ellipse cx="13.5" cy="17" rx="9.4" ry="8.6" fill="%231a1a1f"/><circle cx="24.5" cy="8.6" r="2.6" fill="%231a1a1f"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Hanken+Grotesk:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700&text=%E4%B8%80%E8%A1%8C%E6%97%A5%E8%A8%98%E8%8D%92%E6%9B%87%E5%87%AA%E6%99%B4%E8%BC%9D&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+
+<div class="kanji-motif" aria-hidden="true">一行日記</div>
+
+<main class="page">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow"><span class="jp">一行日記</span></div>
+      <h1 class="title">Memory <span class="accent">Archive</span></h1>
+    </div>
+    <a class="today-link" href="index.html">← Today</a>
+  </header>
+
+  <div class="archive-empty" id="journal-empty" hidden>
+    nothing set down yet — <a href="index.html">write your first line</a>
+  </div>
+
+  <section class="archive-grid" id="archive">
+    <aside class="archive-panel archive-rail">
+      <div class="rail-title">Years</div>
+      <div class="year-stack" id="year-stack"></div>
+      <div class="rail-title">Months</div>
+      <div class="month-list" id="month-list"></div>
+    </aside>
+
+    <section>
+      <div class="toolbar">
+        <input class="search" id="search" type="search" placeholder="Search your memories…" aria-label="Search memories">
+        <div class="mood-filter" id="mood-filter" aria-label="Filter by mood"></div>
+      </div>
+      <div class="memory-stream" id="memory-stream"></div>
+      <nav class="pager" id="pager" aria-label="Pages" hidden>
+        <button id="newer" type="button">‹ newer</button>
+        <span id="page-label"></span>
+        <button id="older" type="button">older ›</button>
+      </nav>
+    </section>
+
+    <aside class="archive-panel detail" id="detail" hidden>
+      <div class="detail-hero">
+        <div class="detail-date" id="detail-date"></div>
+        <p class="detail-line" id="detail-line"></p>
+        <div class="detail-mood" id="detail-mood"></div>
+      </div>
+      <div class="mini-calendar">
+        <div class="section-title" id="cal-title">Month map</div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <div class="insight-row" id="insights"></div>
+      </div>
+    </aside>
+  </section>
+
+  <footer class="footer-note">
+    <a class="byline" href="https://shusingh.github.io/" target="_blank" rel="noreferrer">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="13.5" cy="17" rx="9.4" ry="8.6"/><circle cx="24.5" cy="8.6" r="2.6"/></svg>
+      made by Shubham Singh
+    </a>
+  </footer>
+</main>
+
+<script src="shared.js?v=5"></script>
+<script src="memories.js?v=5"></script>
+</body>
+</html>
