@@ -58,6 +58,9 @@ body::before {
   z-index: 1;
   mix-blend-mode: multiply;
   filter: brightness(1.12) contrast(0.8) saturate(0.68) blur(0.3px);
+  /* Warm vignette: real paper darkens toward its edges. Without this the
+     sheet reads as a flat scan rather than a lit page. */
+  box-shadow: inset 0 0 200px rgba(76, 59, 36, 0.14);
 }
 
 .kanji-motif {
