@@ -177,6 +177,19 @@ a:focus-visible {
   letter-spacing: 0.05em;
   text-decoration: underline;
   text-underline-offset: 3px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 5px 9px;
+  margin: -5px -9px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.rail-link:hover,
+.rail-link:focus-visible {
+  background: var(--bg-elevated);
+  border-color: var(--line);
 }
 
 @media (min-width: 1150px) {
@@ -400,7 +413,7 @@ a:focus-visible {
 
 .today-saved { margin-top: 46px; background: rgba(247, 243, 235, 0.74); }
 .today-saved .text { font-size: 17px; }
-.today-saved .linklike { margin-top: 12px; margin-right: 14px; padding: 0; }
+.today-saved .linklike { margin-top: 7px; margin-right: 6px; }
 
 /* ================= The year, marbled ================= */
 
@@ -524,9 +537,14 @@ a:focus-visible {
   color: var(--text-tertiary);
   text-wrap: balance;
 }
+/* Links sit flush with the text, then grow an opaque paper pill on hover,
+   like the nav links on the portfolio. Negative margins offset the padding
+   so nothing shifts when the pill appears. */
 .linklike {
+  display: inline-block;
   background: none;
-  border: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
   cursor: pointer;
   font-family: var(--font-mono);
   font-size: 11px;
@@ -535,9 +553,21 @@ a:focus-visible {
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-color: rgba(86, 122, 38, 0.4);
-  padding: 2px;
+  padding: 5px 9px;
+  margin: -5px -9px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    text-decoration-color 0.2s ease;
 }
-.linklike:hover { text-decoration-color: var(--accent-strong); }
+.linklike:hover,
+.linklike:focus-visible {
+  color: var(--accent-strong);
+  background: var(--bg-elevated);
+  border-color: var(--line);
+  text-decoration-color: var(--accent-strong);
+}
 
 /* Maker's mark */
 .byline {
@@ -553,7 +583,18 @@ a:focus-visible {
   transition: color 0.2s ease;
 }
 .byline svg { width: 12px; height: 12px; fill: currentColor; opacity: 0.8; }
-.byline:hover { color: var(--accent-strong); }
+.byline {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 5px 9px;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+.byline:hover,
+.byline:focus-visible {
+  color: var(--accent-strong);
+  background: var(--bg-elevated);
+  border-color: var(--line);
+}
 
 /* ================= Memory Archive page ================= */
 
@@ -848,6 +889,54 @@ a:focus-visible {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-tertiary);
+}
+
+/* ================= Kentō cursor ================= */
+
+/* While the kentō cursor is active, its fine ink dot IS the pointer. */
+html.kento-cursor,
+html.kento-cursor * { cursor: none !important; }
+
+.kento-corner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 11px;
+  height: 11px;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  will-change: transform;
+  transition: opacity 0.25s ease;
+}
+.kento-corner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 0 solid rgba(26, 26, 31, 0.8);
+  transition: border-color 0.2s ease;
+}
+.kento-nw::before { border-top-width: 1.5px; border-left-width: 1.5px; }
+.kento-ne::before { border-top-width: 1.5px; border-right-width: 1.5px; }
+.kento-sw::before { border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.kento-se::before { border-bottom-width: 1.5px; border-right-width: 1.5px; }
+.kento-corner.kento-hot::before { border-color: var(--accent); }
+
+.kento-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 999px;
+  background: var(--sumi);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  will-change: transform;
+  transition: opacity 0.2s ease;
 }
 
 /* ================= Motion & responsive ================= */
