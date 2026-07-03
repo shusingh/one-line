@@ -29,6 +29,9 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* The hidden attribute must win over display rules like .archive-grid's grid. */
+[hidden] { display: none !important; }
+
 body {
   min-height: 100vh;
   background:
